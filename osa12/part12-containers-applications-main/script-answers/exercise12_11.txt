@@ -1,0 +1,70 @@
+$ docker container ls
+CONTAINER ID   IMAGE     COMMAND                  CREATED       STATUS          PORTS                     NAMES
+c1a0e5610a53   redis     "docker-entrypoint.s…"   2 hours ago   Up 14 minutes   0.0.0.0:6378->6379/tcp    todo-backend-redis-1
+874886cd99c4   nginx     "/docker-entrypoint.…"   5 hours ago   Up 5 hours      0.0.0.0:8080->80/tcp      kind_kepler
+0d2c14ae2279   mongo     "docker-entrypoint.s…"   3 days ago    Up 14 minutes   0.0.0.0:3456->27017/tcp   todo-backend-mongo-1
+$ docker exec -it  todo-backend-redis-1 bash
+root@c1a0e5610a53:/data# redis-cli
+127.0.0.1:6379> GET ADD_TODOS_KEY
+"5"
+127.0.0.1:6379> KEYS *
+1) "ADD_TODOS_KEY"
+127.0.0.1:6379> SET ADD_TODOS_KEY 9001
+OK
+127.0.0.1:6379> GET ADD_TODOS_KEY
+"9001"
+127.0.0.1:6379>
+127.0.0.1:6379> GET ADD_TODOS_KEY
+"9002"
+127.0.0.1:6379> DEL ADD_TODOS_KEY
+(integer) 1
+127.0.0.1:6379> GET ADD_TODOS_KEY
+(nil)
+127.0.0.1:6379> KEYS *
+(empty array)
+127.0.0.1:6379>
+
+
+
+---------------------------------------
+http://localhost:3000/statistics
+
+{
+  "added_todos": "9001"
+}
+
+---------------------------------------
+
+After: SET ADD_TODOS_KEY 9001
+
+Postman:
+POST: http://localhost:3000/todos/
+
+Body:
+{
+    "text": "Learn everything about toolbelts",
+    "done": false
+}
+
+http://localhost:3000/statistics
+{
+  "added_todos": "9002"
+}
+
+---------------------------------------
+After: DEL ADD_TODOS_KEY
+
+Postman:
+POST: http://localhost:3000/todos/
+
+Body:
+{
+    "text": "Learn everything about toolbelts 2",
+    "done": false
+}
+
+http://localhost:3000/statistics
+{
+  "added_todos": "1"
+}
+

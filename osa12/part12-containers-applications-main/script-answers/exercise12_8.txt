@@ -1,0 +1,85 @@
+docker compose -f docker-compose.dev.yml up
+$ docker exec -it todo-backend-mongo-1 bash
+root@0d2c14ae2279:/# mongosh -u root -p example
+test> show dbs
+admin         100.00 KiB
+config         96.00 KiB
+local          72.00 KiB
+the_database   56.00 KiB
+test> use the_database
+switched to db the_database
+the_database> show collections
+todos
+the_database> db.todos.find({})
+[
+  {
+    _id: ObjectId('66470a362b4c1314752202d8'),
+    text: 'Learn everything about containers',
+    done: false
+  },
+  {
+    _id: ObjectId('66470a362b4c1314752202d9'),
+    text: 'Learn more and more about containers',
+    done: false
+  }
+]
+the_database> db.todos.insertOne({text: "Increase the number of tools in my toolbelt", done:false})
+{
+  acknowledged: true,
+  insertedId: ObjectId('664b24ce81554ace672202d8')
+}
+the_database> db.todos.find({})
+[
+  {
+    _id: ObjectId('66470a362b4c1314752202d8'),
+    text: 'Learn everything about containers',
+    done: false
+  },
+  {
+    _id: ObjectId('66470a362b4c1314752202d9'),
+    text: 'Learn more and more about containers',
+    done: false
+  },
+  {
+    _id: ObjectId('664b24ce81554ace672202d8'),
+    text: 'Increase the number of tools in my toolbelt',
+    done: false
+  }
+]
+the_database>
+
+-----------------------------------------------------------
+
+$ MONGO_URL=mongodb://the_username:the_password@localhost:3456/the_database npm run dev
+
+> todo-express-backend@0.0.0 dev
+> nodemon ./bin/www
+
+[nodemon] 2.0.12
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node ./bin/www`
+GET /todos/ 200 12.502 ms - 287
+
+http://localhost:3000/todos/
+
+[
+  {
+    "_id": "66470a362b4c1314752202d8",
+    "text": "Learn everything about containers",
+    "done": false
+  },
+  {
+    "_id": "66470a362b4c1314752202d9",
+    "text": "Learn more and more about containers",
+    "done": false
+  },
+  {
+    "_id": "664b24ce81554ace672202d8",
+    "text": "Increase the number of tools in my toolbelt",
+    "done": false
+  }
+]
+
+

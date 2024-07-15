@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  app:
+    image: flight-diary-frontend-prod
+    build:
+      context: .
+      dockerfile: ./flight-diary-frontend/client.prod.Dockerfile
+    environment:
+      - VITE_PROD_BACKEND_URL=http://localhost:80/api
+    #  - VITE_BACKEND_URL=http://localhost:80/api
+    container_name: flight-diary-frontend-prod
+    ports:
+      - 8080:80
+    networks:
+      - backend_frontend_network
+
+  express-app:
+    image: flight-diary-backend-prod
+    container_name: flight-diary-backend-prod
+    build:
+      context: .
+      dockerfile: ./flight-diary-backend/server.prod.Dockerfile
+    networks:
+      - backend_frontend_network
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 80:80
+    container_name: flight-diary-reverse-proxy-prod
+    depends_on:
+      - app
+      - express-app
+    networks:
+      - backend_frontend_network
+
+networks:
+  backend_frontend_network:
+    name: backend_frontend_network

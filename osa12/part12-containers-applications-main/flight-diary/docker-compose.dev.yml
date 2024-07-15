@@ -1,0 +1,61 @@
+#prettier-ignore
+
+version: '3.8'            # Version 3.8 is quite new and should work
+
+services:
+  app:
+    image: flight-diary-frontend-dev
+    build:
+      context: . # The context will pick this directory as the "build context"
+      dockerfile: ./flight-diary-frontend/client.dev.Dockerfile # This will simply tell which dockerfile to read
+    #command: vite
+    volumes:
+      - ./flight-diary-frontend/:/flight-diary-frontend
+    #  - ./:/flight-diary-frontend # The path can be relative, so ./ is enough to say "the same location as the docker-compose.yml"
+      - /flight-diary-frontend/node_modules
+    working_dir: /flight-diary-frontend
+    ports:
+      - 5173:5173
+    environment:
+      - VITE_DEV_BACKEND_URL=http://localhost:8080/api
+      #- VITE_BACKEND_URL=http://localhost:8080/api
+      #- VITE_BACKEND_URL=http://express-app:3000/
+    container_name: flight-diary-frontend-dev # This will name the container todo-frontend-dev
+    depends_on:
+      - express-app
+    networks:
+      - backend_frontend_network
+
+  express-app:
+    image: flight-diary-backend-dev
+    container_name: flight-diary-backend-dev
+    build:
+      context: . # The context will pick this directory as the "build context"
+      dockerfile: ./flight-diary-backend/server.dev.Dockerfile # This will simply tell which dockerfile to read
+    volumes:
+      - .:/express-app
+    #working_dir: /todo-backend
+    ports:
+      - 3000:3000
+    networks:
+      - backend_frontend_network
+
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: flight-diary-reverse-proxy
+    depends_on:
+      - app # wait for the frontend container to be started
+      - express-app
+    networks:
+      - backend_frontend_network
+
+#  debug-helper:
+#    image: busybox
+
+networks:
+  backend_frontend_network:
+    name: backend_frontend_network

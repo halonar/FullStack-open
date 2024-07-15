@@ -1,0 +1,110 @@
+$docker container run -it ubuntu bash
+root@58eca3319130:/# cd /usr/src
+root@58eca3319130:/usr/src# ls
+root@58eca3319130:/usr/src# mkdir app
+root@58eca3319130:/usr/src# cd app
+root@58eca3319130:/usr/src/app# nano index.js
+bash: nano: command not found
+root@58eca3319130:/usr/src/app# apt-get update
+Get:1 http://security.ubuntu.com/ubuntu noble-security InRelease [89.7 kB]
+Get:2 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+Get:3 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [17.5 kB]
+Get:4 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [31.6 kB]
+Get:5 http://archive.ubuntu.com/ubuntu noble-updates InRelease [89.7 kB]
+Get:6 http://archive.ubuntu.com/ubuntu noble-backports InRelease [89.7 kB]
+Get:7 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1808 kB]
+Get:8 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+Get:9 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+Get:10 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+Get:11 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [34.0 kB]
+Get:12 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [20.5 kB]
+Get:13 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [4224 B]
+Fetched 22.2 MB in 15s (1482 kB/s)
+Reading package lists... Done
+root@58eca3319130:/usr/src/app# apt-get -y install nano
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Suggested packages:
+  hunspell
+The following NEW packages will be installed:
+  nano
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Need to get 281 kB of archives.
+After this operation, 856 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu noble/main amd64 nano amd64 7.2-2build1 [281 kB]
+Fetched 281 kB in 1s (379 kB/s)
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package nano.
+(Reading database ... 4368 files and directories currently installed.)
+Preparing to unpack .../nano_7.2-2build1_amd64.deb ...
+Unpacking nano (7.2-2build1) ...
+Setting up nano (7.2-2build1) ...
+update-alternatives: using /bin/nano to provide /usr/bin/editor (editor) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/editor.1.gz because associated file /usr/share/man/man1/nano.1.gz (of link group editor) doesn't exist
+update-alternatives: using /bin/nano to provide /usr/bin/pico (pico) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/pico.1.gz because associated file /usr/share/man/man1/nano.1.gz (of link group pico) doesn't exist
+root@58eca3319130:/usr/src/app# nano /usr/src/app/index.js
+root@58eca3319130:/usr/src/app# less index.js
+bash: less: command not found
+root@58eca3319130:/usr/src/app# cat index.js
+console.log('Hello World')
+
+root@58eca3319130:/usr/src/app#
+
+
+
+---------------------------------------------------------------------------------------------
+$docker start --interactive crazy_jennings
+
+root@549adeb23cac:/# apt-get update
+Get:1 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+Get:2 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+Get:3 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+Get:4 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+Get:5 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+Get:6 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+Get:7 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [12.7 kB]
+Get:8 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [181 kB]
+Get:9 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1808 kB]
+Get:10 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [249 kB]
+Get:11 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+Get:12 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [16.9 kB]
+Get:13 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [178 kB]
+Get:14 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [202 kB]
+Get:15 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [302 kB]
+Get:16 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [9711 B]
+Get:17 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [114 kB]
+Fetched 23.5 MB in 2s (14.5 MB/s)
+Reading package lists... Done
+root@549adeb23cac:/#
+root@549adeb23cac:/# apt-get -y install nano
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Suggested packages:
+  hunspell
+The following NEW packages will be installed:
+  nano
+0 upgraded, 1 newly installed, 0 to remove and 9 not upgraded.
+Need to get 281 kB of archives.
+After this operation, 856 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu noble/main amd64 nano amd64 7.2-2build1 [281 kB]
+Fetched 281 kB in 1s (383 kB/s)
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package nano.
+(Reading database ... 4368 files and directories currently installed.)
+Preparing to unpack .../nano_7.2-2build1_amd64.deb ...
+Unpacking nano (7.2-2build1) ...
+Setting up nano (7.2-2build1) ...
+update-alternatives: using /bin/nano to provide /usr/bin/editor (editor) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/editor.1.gz because associated file /usr/share/man/man1/nano.1.gz (of link group editor) doesn't exist
+update-alternatives: using /bin/nano to provide /usr/bin/pico (pico) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/pico.1.gz because associated file /usr/share/man/man1/nano.1.gz (of link group pico) doesn't exist
+root@549adeb23cac:/#
+root@549adeb23cac:/# nano /usr/src/app/index.js
+root@549adeb23cac:/#
+root@549adeb23cac:/# cat /usr/src/app/index.js
+console.log('Hello World')
+
+ 

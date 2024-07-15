@@ -1,0 +1,6 @@
+# Ignore Editor
+.vscode
+
+# Ignore Node.js specific files
+node_modules
+npm-debug.log

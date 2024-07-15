@@ -1,0 +1,114 @@
+#prettier-ignore
+
+version: '3.8' # Version 3.8 is quite new and should work
+
+services:
+  app:
+    image: todo-frontend-dev
+    build:
+      context: . # The context will pick this directory as the "build context"
+      dockerfile: .docker/client.dev.Dockerfile # This will simply tell which dockerfile to read
+    volumes:
+      - ./todo-frontend-1/:/todo-frontend
+    #      - ./:/todo-frontend # The path can be relative, so ./ is enough to say "the same location as the docker-compose.yml"
+    ports:
+      - 5173:5173
+    environment:
+      - VITE_BACKEND_URL=http://localhost:8080/api
+      #- VITE_BACKEND_URL=http://express-app:3000/
+      #- WDS_SOCKET_HOST=127.0.0.1 
+      #- CHOKIDAR_USEPOLLING=true
+      #- WATCHPACK_POLLING=true 
+    container_name: todo-frontend-dev # This will name the container todo-frontend-dev
+    depends_on:
+      - express-app
+    networks:
+      - backend_frontend_network
+
+  # docker compose -f docker-compose.dev.yml up --build app-tests
+  app-tests:
+    build:
+      context: . # The context will pick this directory as the "build context"
+      dockerfile: .docker/client.test.Dockerfile # This will simply tell which dockerfile to read
+    volumes:
+      - ./todo-frontend-1/:/todo-frontend
+    depends_on:
+      - app
+      - express-app
+
+  express-app:
+    image: todo-backend-dev
+    container_name: todo-backend-dev
+    build:
+      context: . # The context will pick this directory as the "build context"
+      dockerfile: .docker/server.dev.Dockerfile # This will simply tell which dockerfile to read
+    command: nodemon ./bin/www
+    #command: nodemon ./app.js
+    environment:
+      #- MONGO_URL=mongodb://the_username:the_password@172.27.0.3:27017/the_database
+      - MONGO_URL=mongodb://the_username:the_password@mongo:27017/the_database
+      #  - MONGO_URL=mongodb://the_username:the_password@localhost:3456/the_database
+      - REDIS_URL=//redis:6379
+    #      - REDIS_URL="//localhost:6378"
+    volumes:
+      - .:/express-app
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - backend_frontend_network
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - 27017:27017
+      #- 3456:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=the_username
+      - MONGO_INITDB_ROOT_PASSWORD=the_password
+      - MONGO_INITDB_DATABASE=the_database
+    volumes:
+      - ./todo-backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - /todo-backend/mongo_data:/data/db
+    #      - ./mongo_data:/data/db
+    networks:
+      - backend_frontend_network
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - 6379:6379
+      #- 6378:6379
+    command: ["redis-server", "--appendonly", "yes"] # Overwrite the CMD
+    volumes: # Declare the volume
+      - ./todo-backend/redis_data:/data
+    networks:
+      - backend_frontend_network
+
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      - app # wait for the frontend container to be started
+      - express-app
+    networks:
+      - backend_frontend_network
+
+#  debug-helper:
+#    image: busybox
+
+volumes:
+  mongo_data:
+  redis-data:
+
+networks:
+  backend_frontend_network:
+    name: backend_frontend_network
