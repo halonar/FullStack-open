@@ -1,0 +1,85 @@
+#prettier-ignore
+
+version: '3.8'            # Version 3.8 is quite new and should work
+
+services:
+  app:
+    image: bloglist-frontend-dev
+    build:
+      context: . # The context will pick this directory as the "build context"
+      dockerfile: .docker/client.dev.Dockerfile # This will simply tell which dockerfile to read
+    volumes:
+      - ./bloglist-frontend/:/bloglist-frontend
+    #      - ./:/todo-frontend # The path can be relative, so ./ is enough to say "the same location as the docker-compose.yml"
+    #working_dir: /todo-frontend
+    ports:
+      - 5173:5173
+    environment:
+      - VITE_BACKEND_URL=http://localhost:8080/api
+      #- VITE_BACKEND_URL=http://express-app:3000/
+    container_name: bloglist-frontend-dev # This will name the container todo-frontend-dev
+    depends_on:
+      - express-app
+    networks:
+      - backend_frontend_network
+
+  express-app:
+    image: bloglist-backend-dev
+    container_name: bloglist-backend-dev
+    build:
+      context: . # The context will pick this directory as the "build context"
+      dockerfile: .docker/server.dev.Dockerfile # This will simply tell which dockerfile to read
+    #command: nodemon ./bin/www
+    #command: nodemon ./app.js
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+    volumes:
+      - .:/express-app
+    #working_dir: /todo-backend
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    networks:
+      - backend_frontend_network
+
+  postgres:  
+    image: postgres
+    restart: always
+    container_name: postgres
+    ports:
+      - 5432:5432
+      #- 3456:27017
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - /bloglist-backend/postgres-data:/var/lib/postgresql/data 
+    #  - /todo-backend/mongo_data:/data/db
+    networks:
+      - backend_frontend_network
+
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      - app # wait for the frontend container to be started
+      - express-app
+    networks:
+      - backend_frontend_network
+
+#  debug-helper:
+#    image: busybox
+
+volumes:
+  postgres-data:
+
+networks:
+  backend_frontend_network:
+    name: backend_frontend_network
